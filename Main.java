@@ -19,11 +19,30 @@ class Healthbar {
     }
 
     public void increaseHealth(byte Amount) {
-        setHealth((byte) (Health + Amount));
+    	byte currentHealth = getHealth();
+        byte newHealth= (byte) (currentHealth + Amount);
+        byte overCapacity = (byte) (maxHealth - currentHealth);
+        
+        if (newHealth > maxHealth) {
+            setHealth(maxHealth);
+            System.out.println("Darah bertambah " + overCapacity + "\n");
+        } else {
+            setHealth(newHealth);
+            System.out.println("Darah bertambah " + Amount + "\n");
+        }
     }
 
     public void decreaseHealth(byte Amount) {
-        setHealth((byte) (Health - Amount));
+    	byte currentHealth = getHealth();
+        byte newHealth= (byte) (currentHealth - Amount);
+        
+        if (newHealth < minHealth) {
+            setHealth(minHealth);
+            System.out.println("Darah berkurang " + currentHealth+ "\n");
+        } else {
+            setHealth(newHealth);
+            System.out.println("Darah berkurang " + Amount + "\n");
+        }
     }
 
     public boolean alive() {
@@ -55,7 +74,7 @@ class Healthbar {
                 byte Injuredloss = (byte) (random.nextInt(31) + 50);
                 decreaseHealth(Injuredloss);
                 if (alive()) {
-                    System.out.println("Anda tidak dapat melawan orang tersebut. Anda berhasil kabur tetapi menerima " + Injuredloss + "damage");
+                    System.out.println("Anda tidak dapat melawan orang tersebut.\nAnda berhasil kabur tetapi menerima " + Injuredloss + "damage");
                 } else {
                     System.out.println("Karakter anda mati...... \n\n Terima kasih telah bermain");
                     System.exit(0);
@@ -70,21 +89,41 @@ class Healthbar {
         private final byte maxMana = 100;
         private final byte minMana = 0;
 
-        public void setMana(byte Mana) {
-            this.Mana = Mana;
+        public byte setMana(byte Mana) {
+            return this.Mana = Mana;
         }
 
         public byte getMana() {
             return Mana;
         }
 
-        public void increaseMana(byte Amount) {
-            setMana((byte) (Mana + Amount));
+        public void increaseMana(byte amount) {
+        	byte currentMana = getMana();
+            byte newMana= (byte) (currentMana + amount);
+            byte overCapacity = (byte) (maxMana- currentMana);
+            
+            if (newMana > maxMana) {
+                setMana(maxHealth);
+                System.out.println("Mana bertambah " + overCapacity + "\n");
+            } else {
+                setMana(newMana);
+                System.out.println("Mana bertambah " + amount + "\n");
+            }
         }
 
-        public void decreaseMana(byte Amount) {
-            setMana((byte) (Mana - Amount));
+        public void decreaseMana(byte amount) {
+            byte currentMana = getMana();
+            byte newMana = (byte) (currentMana - amount);
+            
+            if (newMana < minMana) {
+                setMana(minMana);
+                System.out.println("Mana berkurang " + currentMana + "\n");
+            } else {
+                setMana(newMana);
+                System.out.println("Mana berkurang " + amount + "\n");
+            }
         }
+
 
         public void useMagic() {
             Random random = new Random();
@@ -95,9 +134,13 @@ class Healthbar {
             } else if (Mana <= minMana) {
                 System.out.println("Mana tidak cukup untuk melakukan healing!");
             } else {
+            	if (Mana - manaUsed < minMana) {
+            		increaseHealth(manaUsed);
+            	}
+            	else {
                 increaseHealth(healthHealed);
+                }
                 decreaseMana(manaUsed);
-                System.out.println("Anda berhasil melakukan healing \ndarah bertambah " + healthHealed + " Tetapi Mana berkurang " + manaUsed);
             }
         }
 
@@ -108,7 +151,7 @@ class Healthbar {
                 byte Poisoned = (byte) (random.nextInt(26) + 25);
                 decreaseHealth(Poisoned);
                 if(alive()) {
-                	System.out.println("Anda tertipu, potion yang anda minum adalah racun!\n anda menerima " + Poisoned + "damage");
+                	System.out.println("Anda tertipu, potion yang anda minum adalah racun!\n");
                 }
                 else {
                 	System.out.println("Karakter anda mati...... \n\n Terima kasih telah bermain");
@@ -121,12 +164,13 @@ class Healthbar {
                 }	
                 else {
                 	increaseMana(manaRestored);
-                	System.out.println("Berhasil mengisi "+ manaRestored+ " Mana");
+                	
+                	}
                 }
             }
         }
     }
-}
+
 
 public class Main {
     public static void main(String[] args) {
